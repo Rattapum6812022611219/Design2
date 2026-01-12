@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Design Thinking & Mindset Quiz</title>
+<style>
+body{font-family:Arial;background:#eef2f3;padding:20px}
+.container{background:white;max-width:900px;margin:auto;padding:20px;border-radius:10px}
+.question{margin-bottom:20px}
+button{padding:10px 20px;background:#2196f3;color:white;border:none;font-size:16px;cursor:pointer}
+.correct{color:green}
+.wrong{color:red}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Design Thinking & Mindset Quiz</h1>
+<div id="quiz"></div>
+<button onclick="check()">ตรวจคำตอบ</button>
+<div id="result"></div>
+</div>
+
+<script>
+const quizData = [
+{q:"Design Thinking หมายถึงอะไร",a:["การคิดเชิงธุรกิจ","การแก้ปัญหาโดยใช้มนุษย์เป็นศูนย์กลาง","การใช้เทคโนโลยี","การคิดจากอดีต"],c:1,e:"Design Thinking คือการแก้ปัญหาโดยยึดผู้ใช้เป็นศูนย์กลาง"},
+{q:"ใครให้คำนิยาม Design Thinking",a:["Einstein","Edison","Tim Brown","Jobs"],c:2,e:"Tim Brown จาก IDEO เป็นผู้ให้นิยาม"},
+{q:"Design Thinking รวมอะไร",a:["คน เงิน เวลา","คน เทคโนโลยี ธุรกิจ","อารมณ์ เหตุผล","ความรู้"],c:1,e:"รวม Human, Technology และ Business"},
+{q:"Mindset คืออะไร",a:["สมอง","ความคิด ความเชื่อ ทัศนคติ","บุคลิก","ประสบการณ์"],c:1,e:"Mindset คือกรอบความคิดและทัศนคติ"},
+{q:"Mindset ประกอบด้วยอะไร",a:["ความคิด","ความรู้สึก","ความคิด พฤติกรรม ความรู้สึก","ความรู้"],c:2,e:"Mindset มีทั้งความคิด ความรู้สึก และพฤติกรรม"},
+{q:"หัวใจของ Design Thinking คืออะไร",a:["การเงิน","Empathy","การตลาด","เทคโนโลยี"],c:1,e:"Empathy คือการเข้าใจผู้ใช้"},
+{q:"Empathy คืออะไร",a:["คิดแทน","เข้าใจผู้อื่นอย่างลึกซึ้ง","สงสาร","เดาใจ"],c:1,e:"Empathy คือการเข้าใจความรู้สึกและปัญหาของผู้อื่น"},
+{q:"ลักษณะของ Design Thinking",a:["หลีกเลี่ยงผิด","หาคำตอบทันที","ทดลองและเรียนรู้","ใช้ข้อมูลเก่า"],c:2,e:"เน้นการทดลองและเรียนรู้"},
+{q:"Business Thinking ต่างอย่างไร",a:["ยอมรับล้มเหลว","ใช้จินตนาการ","ไม่ยอมรับความผิดพลาด","ใช้ผู้ใช้เป็นศูนย์กลาง"],c:2,e:"Business Thinking เน้นความแน่นอน"},
+{q:"Creative Thinking เน้นอะไร",a:["เหตุผล","วิเคราะห์","จินตนาการและอารมณ์","ข้อมูล"],c:2,e:"Creative Thinking ใช้จินตนาการ"},
+{q:"ปัญหาใน Design Thinking คือ",a:["อุปสรรค","จุดเริ่มต้น","ควรหลีกเลี่ยง","ล้มเหลว"],c:1,e:"ปัญหาคือจุดเริ่มต้น"},
+{q:"Prototype คืออะไร",a:["แผน","ต้นแบบ","ของจริง","แนวคิด"],c:1,e:"Prototype คือสิ่งที่ใช้ทดลอง"},
+{q:"Prototype ใช้เพื่ออะไร",a:["สวย","ทดสอบไอเดีย","ขาย","โฆษณา"],c:1,e:"เพื่อทดสอบแนวคิด"},
+{q:"Iterate คืออะไร",a:["คิด","ทดลอง","ทำซ้ำและปรับปรุง","ตัดสินใจ"],c:2,e:"Iterate คือการพัฒนาอย่างต่อเนื่อง"},
+{q:"Fail early to succeed sooner คืออะไร",a:["ล้มเหลวคือจบ","ล้มเพื่อเรียนรู้เร็ว","ไม่เก่ง","ล้มแล้วหยุด"],c:1,e:"ล้มเร็วเพื่อเรียนรู้เร็ว"},
+{q:"ยอมรับความไม่แน่นอนคือ",a:["Empathy","Optimism","Accepting uncertainty","Modeling"],c:2,e:"เป็นหนึ่งใน Design Thinking Mindset"},
+{q:"ทำงานกับคนหลากหลายช่วยอะไร",a:["ลดความคิด","เพิ่มขัดแย้ง","เพิ่มมุมมอง","ช้า"],c:2,e:"ทำให้ได้ไอเดียมากขึ้น"},
+{q:"Bias toward action คือ",a:["คิด","วางแผน","ลงมือทำ","รอ"],c:2,e:"หมายถึงลงมือทำทันที"},
+{q:"Creative Confidence คือ",a:["เชื่อว่าตนสร้างสรรค์ได้","เชื่อคนอื่น","เชื่อข้อมูล","เชื่อโชค"],c:0,e:"เชื่อมั่นในความคิดสร้างสรรค์ของตน"},
+{q:"Learn from Failure คือ",a:["หลีกเลี่ยง","เลิก","เรียนรู้","ไม่ยอมรับ"],c:2,e:"ล้มแล้วต้องเรียนรู้"},
+{q:"ตั้งคำถามช่วยอะไร",a:["ลด","ปิด","เปิดมุมมอง","สับสน"],c:2,e:"คำถามช่วยเปิดแนวคิดใหม่"},
+{q:"Design Thinking เหมาะกับปัญหา",a:["คำตอบเดียว","ซับซ้อน","ง่าย","คณิต"],c:1,e:"เหมาะกับปัญหาซับซ้อน"},
+{q:"User มีบทบาทอะไร",a:["ผู้ซื้อ","ศูนย์กลาง","ผู้ดู","ไม่มี"],c:1,e:"User เป็นศูนย์กลาง"},
+{q:"ความล้มเหลวคือ",a:["ผิด","จบ","ข้อมูลพัฒนา","อับอาย"],c:2,e:"ความล้มเหลวให้ข้อมูล"},
+{q:"เป้าหมาย Design Thinking",a:["กำไร","นวัตกรรมที่ตอบโจทย์คน","เทคโนโลยี","ลดต้นทุน"],c:1,e:"เป้าหมายคือแก้ปัญหาคน"}
+];
+
+const quiz = document.getElementById("quiz");
+
+quizData.forEach((q,i)=>{
+let html=`<div class='question'><p>${i+1}. ${q.q}</p>`;
+q.a.forEach((c,j)=>{
+html+=`<label><input type='radio' name='q${i}' value='${j}'> ${c}</label><br>`;
+});
+html+="</div>";
+quiz.innerHTML+=html;
+});
+
+function check(){
+let score=0;
+let out="";
+quizData.forEach((q,i)=>{
+let u=document.querySelector(`input[name=q${i}]:checked`);
+if(u && u.value==q.c){
+score++;
+out+=`<p class='correct'>ข้อ ${i+1} ✔ ${q.e}</p>`;
+}else{
+out+=`<p class='wrong'>ข้อ ${i+1} ✘ เฉลย: ${q.a[q.c]} — ${q.e}</p>`;
+}
+});
+document.getElementById("result").innerHTML=`<h2>คะแนน ${score}/25</h2>`+out;
+}
+</script>
+</body>
+</html>
